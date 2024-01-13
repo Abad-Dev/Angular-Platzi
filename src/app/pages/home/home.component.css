@@ -204,7 +204,6 @@
   }
   
   .todo-list li label {
-    word-break: break-all;
     padding: 15px 15px 15px 60px;
     display: block;
     line-height: 1.2;
