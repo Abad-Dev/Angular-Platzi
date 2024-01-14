@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Task } from '../../models/task.model';
 import { ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
@@ -29,6 +29,20 @@ export class HomeComponent {
     }
   ]);
 
+  filter = signal('all');
+
+  tasksByFilter = computed(() => {
+    const filter = this.filter();
+    const tasks = this.tasks();
+    if (filter == 'pending') {
+        return tasks.filter(task => task.completed != true);
+    } else if (filter == 'completed') {
+        return tasks.filter(task => task.completed != false);
+    } else {
+        return tasks;
+    }
+  })
+
   taskCtrl = new FormControl('',{
     nonNullable: true,
     validators: [
@@ -37,6 +51,11 @@ export class HomeComponent {
         Validators.minLength(3),
     ]
   });
+
+  updateFilter = (type: string) => {
+    this.filter.set(type);
+  }
+
   changeHandler = () => {
     if (!this.taskCtrl.valid){
         alert("El valor ingresado no es válido");
@@ -51,8 +70,19 @@ export class HomeComponent {
     this.taskCtrl.setValue("");
   }
 
+  handleDblClick = (task: Task) => {
+    this.tasks().map(task => task.editing = false);
+    task.editing = true;
+  }
+
   completeTask = (task: Task) => {
     task.completed = !task.completed; // Esta forma es más simple pero no respeta el principio de inmutabilidad
+  }
+
+  updateTask = (task: Task, e: Event) => {
+    const input = e.target as HTMLInputElement;
+    task.title = input.value;
+    task.editing = false;
   }
 
   deleteTask = (index: number) => {

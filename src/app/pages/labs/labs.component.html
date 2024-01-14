@@ -1,32 +1,35 @@
-<h1>Hola mundo</h1>
+<div class="container">
 
-<h2> {{title}}</h2>
+    <h1>Hola mundo</h1>
 
-<h3>Tareas:</h3>
-<ul>
-  <li *ngFor="let task of tasks(); index as i">
-    {{ i + 1 }}. {{ task }}
-  </li>
-</ul>
+    <h2> {{title}}</h2>
 
-<hr>
+    <h3>Tareas:</h3>
+    <ul>
+    <li *ngFor="let task of tasks(); index as i">
+        {{ i + 1 }}. {{ task }}
+    </li>
+    </ul>
 
-<h2>{{ 'Signals' }}</h2>
-<p>Hola tu eres {{ nombre() }}</p>
-<p *ngIf="nombre() == 'Fabian'; else miBloque">
-    Ese soy yo
-</p>
+    <hr>
 
-<ng-template #miBloque>
-    <p>
-        A no ese no soy yo
+    <h2>{{ 'Signals' }}</h2>
+    <p>Hola tu eres {{ inputCtrl.value }}</p>
+    <p *ngIf="inputCtrl.value == 'Fabian'; else miBloque">
+        Ese soy yo
     </p>
-</ng-template>
+
+    <ng-template #miBloque>
+        <p>
+            A no ese no soy yo
+        </p>
+    </ng-template>
 
 
 
 
-<input [value]="nombre()" (keyup)="inputHandler($event)" />
-<br>
-<button (click)="clickHandler()" class="border rounded p-2"> Click me </button>
+    <input [formControl]="inputCtrl" />
+    <br>
+    <button (click)="clickHandler()" class="border rounded p-2"> Click me </button>
 
+</div>

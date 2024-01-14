@@ -1,10 +1,11 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-labs',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './labs.component.html',
   styleUrl: './labs.component.css'
 })
@@ -16,15 +17,9 @@ export class LabsComponent {
     "Crear componentes"
   ]);
 
-  nombre = signal('Pepe');
+  inputCtrl = new FormControl('Pepe');
 
   clickHandler = () => {
     console.log("hola");
-  }
-
-  inputHandler = (event: Event) => {
-    console.log("Evento", event);
-    const input = event.target as HTMLInputElement;
-    this.nombre.set(input.value)
   }
 }
