@@ -1,34 +1,33 @@
 <div class="container">
-
-    <h1>Hola mundo</h1>
-
-    <h2> {{title}}</h2>
-
+    <h1 style="text-transform: capitalize;">{{ title }}</h1>
+    <hr>
     <h3>Tareas:</h3>
-    <ul>
-    <li *ngFor="let task of tasks(); index as i">
-        {{ i + 1 }}. {{ task }}
-    </li>
+    <ul style="list-style: none;">
+        @for (task of tasks(); track task; let i = $index){
+            <li>
+                {{ i + 1 }}. {{ task }}
+            </li>
+        } @empty {
+            <li>No hay mas tareas!</li>
+        }
     </ul>
 
     <hr>
 
     <h2>{{ 'Signals' }}</h2>
     <p>Hola tu eres {{ inputCtrl.value }}</p>
-    <p *ngIf="inputCtrl.value == 'Fabian'; else miBloque">
-        Ese soy yo
-    </p>
 
-    <ng-template #miBloque>
+    @if (inputCtrl.value == 'Fabian') {
+        <p>
+            Ese soy yo
+        </p>
+    } @else {
         <p>
             A no ese no soy yo
         </p>
-    </ng-template>
+    }
 
-
-
-
-    <input [formControl]="inputCtrl" />
+    <input class="form-control" [formControl]="inputCtrl" />
     <br>
     <button (click)="clickHandler()" class="border rounded p-2"> Click me </button>
 
