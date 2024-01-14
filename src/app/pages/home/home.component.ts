@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, Injector, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Task } from '../../models/task.model';
 import { ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
@@ -11,26 +11,26 @@ import { ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
-  tasks = signal<Task[]>([
-    {
-        id: Date.now(),
-        title: "Instalar el angular CLI",
-        completed: false
-    },
-    {
-        id: Date.now(),
-        title: "Crear el proyecto con el comando ng new",
-        completed: false
-    },
-    {
-        id: Date.now(),
-        title: "Crear componentes",
-        completed: false
+  tasks = signal<Task[]>([]);
+  injector = inject(Injector);  
+
+  ngOnInit() {
+    const storage = localStorage.getItem("tasks");
+    if (storage){
+        this.tasks.set(JSON.parse(storage));
     }
-  ]);
+
+    this.trackTasks();
+  }
+  trackTasks = () => {
+    effect(() => {
+        const tasks = this.tasks();
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+        console.log("oli")
+    }, { injector: this.injector })
+  }
 
   filter = signal('all');
-
   tasksByFilter = computed(() => {
     const filter = this.filter();
     const tasks = this.tasks();
@@ -75,20 +75,40 @@ export class HomeComponent {
     task.editing = true;
   }
 
-  completeTask = (task: Task) => {
-    task.completed = !task.completed; // Esta forma es más simple pero no respeta el principio de inmutabilidad
+  completeTask = (index: number) => {
+    this.tasks.update((tasks) => {
+        return tasks.map((task: Task, i: number) => {
+            if (i == index) {
+                task.completed = !task.completed;
+            }
+            return task
+        });
+    })
   }
 
-  updateTask = (task: Task, e: Event) => {
+  updateTask = (index: number, e: Event) => {
     const input = e.target as HTMLInputElement;
-    task.title = input.value;
-    task.editing = false;
+    this.tasks.update((tasks) => {
+        return tasks.map((task: Task, i: number) => {
+            if (i == index) {
+                task.title = input.value;
+                task.editing = false;
+            }
+            return task
+        })
+    });
   }
 
   deleteTask = (index: number) => {
     this.tasks.update((tasks) => {
         //[...tasks].splice(index, 1) No respeta inmutabilidad
-        return tasks.filter((task: Task, i: number) => i != index);;
+        return tasks.filter((task: Task, i: number) => i != index);
     });
+  }
+
+  clearCompletedTasks = () => {
+    this.tasks.update((tasks) => {
+        return tasks.filter(task => !task.completed);
+    })
   }
 }
