@@ -30,7 +30,7 @@
       <!-- This footer should be hidden by default and shown when there are todos -->
       <footer class="footer">
         <!-- This should be `0 items left` by default -->
-        <span class="todo-count" [ngSwitch]="tasks().length">
+        <span class="todo-count" [ngSwitch]="tasksByFilter().length">
             <p *ngSwitchCase="0">
                 No items left
             </p>
@@ -40,7 +40,7 @@
             </p>
 
             <p *ngSwitchDefault=>
-                <strong>{{ tasks().length }}</strong> items left
+                <strong>{{ tasksByFilter().length }}</strong> items left
             </p>
         </span>
         <!-- Remove this if you don't implement routing -->
